@@ -21,26 +21,14 @@ namespace UrlMapper
         public bool IsMatched(string textToCompare)
         {
             if (Pattern == null || textToCompare == null)
-            {
-                IsMatch = false;
-                return false;
-            }
+                return ReturnIsMatch(false);
             else if (Pattern == textToCompare && string.IsNullOrEmpty(textToCompare))
-            {
-                IsMatch = true;
-                return true;
-            }
+                return ReturnIsMatch(true);
             else if (string.IsNullOrEmpty(textToCompare))
-            {
-                IsMatch = false;
-                return false;
-            }
+                return ReturnIsMatch(false);
 
             if (Routes.Count() == 1 && textToCompare.IndexOf('{') == textToCompare.IndexOf('}') && textToCompare.IndexOf('}') == -1)
-            {
-                IsMatch = true;
-                return true;
-            }
+                return ReturnIsMatch(true);
 
             var text = textToCompare;
             var ParameterName = string.Empty;
@@ -50,10 +38,7 @@ namespace UrlMapper
                 if (isParameter && string.IsNullOrEmpty(text))
                 {
                     if (!AddParameter(ParameterName, string.Empty))
-                    {
-                        IsMatch = false;
-                        return false;
-                    }
+                        return ReturnIsMatch(false);
                 }
                 else if (isParameter)
                 {
@@ -65,37 +50,26 @@ namespace UrlMapper
                 }
                 else if (!isParameter && text.Contains(route))
                 {
-                    var Paramval = text.Substring(0, text.IndexOf(route));
-                    if (!AddParameter(ParameterName, Paramval))
-                    {
-                        IsMatch = false;
-                        return false;
-                    }
-                    text = text.Substring(Paramval.Length + route.Length);
+                    var ParameterValue = text.Substring(0, text.IndexOf(route));
+
+                    if (!AddParameter(ParameterName, ParameterValue))
+                        return ReturnIsMatch(false);
+
+                    text = text.Substring(ParameterValue.Length + route.Length);
                     ParameterName = string.Empty;
                 }
-                else
-                {
-                    IsMatch = false;
-                    return false;
-                }
+                else return ReturnIsMatch(false);
             }
 
             if (!string.IsNullOrEmpty(ParameterName) && !string.IsNullOrEmpty(text))
             {
                 if (!AddParameter(ParameterName, text))
-                {
-                    IsMatch = false;
-                    return false;
-                };
+                    return ReturnIsMatch(false);
             }
             else if (string.IsNullOrEmpty(ParameterName) && !string.IsNullOrEmpty(text))
-            {
-                IsMatch = false;
-                return false;
-            }
-            IsMatch = true;
-            return true;
+                return ReturnIsMatch(false);
+
+            return ReturnIsMatch(true);
         }
 
         public void ExtractVariables(string target, IDictionary<string, string> dicToStoreResults)
@@ -117,6 +91,12 @@ namespace UrlMapper
                 return true;
             }
             return false;
+        }
+
+        private bool ReturnIsMatch(bool value)
+        {
+            IsMatch = value;
+            return value;
         }
     }
 }

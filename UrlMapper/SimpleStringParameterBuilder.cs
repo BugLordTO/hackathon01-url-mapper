@@ -25,17 +25,12 @@ namespace UrlMapper
                 var strSplit = str.Split('}');
                 if (strSplit.Length == 1 || isFirst)
                     routes.Add(str);
-                else if (strSplit.Length > 1) { 
-                //    routes.Add("{" + strSplit[0] + "}");
-                //if (!string.IsNullOrEmpty(strSplit[1]))
-                //    routes.Add(strSplit[1]);
-                //else
-                //{
+                else if (strSplit.Length > 1)
+                {
                     routes.Add("{" + strSplit[0] + "}");
                     var strSkip = string.Join("}", strSplit.Skip(1));
                     if (!string.IsNullOrEmpty(strSkip))
                         routes.Add(strSkip);
-                    //routes.Add(strSplit.Skip(1).Aggregate((x, y) => x + "}" + y));
                 }
                 isFirst = false;
             }
