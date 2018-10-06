@@ -12,12 +12,6 @@ namespace UrlMapper
             if (string.IsNullOrEmpty(pattern))
                 return new SimpleStringParameter(routes, pattern);
 
-            if (pattern.IndexOf('{') == pattern.IndexOf('}') && pattern.IndexOf('}') == -1)
-            {
-                routes.Add(pattern.TrimEnd('/'));
-                return new SimpleStringParameter(routes, pattern);
-            }
-
             var patternSplit = pattern.Split('{');
             var isFirst = true;
             foreach (var str in patternSplit)
@@ -28,9 +22,7 @@ namespace UrlMapper
                 else if (strSplit.Length > 1)
                 {
                     routes.Add("{" + strSplit[0] + "}");
-                    var strSkip = string.Join("}", strSplit.Skip(1));
-                    if (!string.IsNullOrEmpty(strSkip))
-                        routes.Add(strSkip);
+                    routes.Add(string.Join("}", strSplit.Skip(1)));
                 }
                 isFirst = false;
             }

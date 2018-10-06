@@ -8,39 +8,29 @@ namespace UrlMapper
     {
         public bool? IsMatch { get; set; }
         public string Pattern { get; set; }
-        public IEnumerable<string> Routes { get; set; }
-        public IDictionary<string, string> Parameters { get; set; }
+        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+
+        private IEnumerable<string> Routes { get; set; }
 
         public SimpleStringParameter(IEnumerable<string> Routes, string Pattern)
         {
-            this.Parameters = new Dictionary<string, string>();
             this.Routes = Routes;
             this.Pattern = Pattern;
         }
 
         public bool IsMatched(string textToCompare)
         {
-            if (Pattern == null || textToCompare == null)
-                return ReturnIsMatch(false);
-            else if (Pattern == textToCompare && string.IsNullOrEmpty(textToCompare))
+            if (Pattern == string.Empty && textToCompare == string.Empty)
                 return ReturnIsMatch(true);
-            else if (string.IsNullOrEmpty(textToCompare))
+            else if (string.IsNullOrEmpty(Pattern) || string.IsNullOrEmpty(textToCompare))
                 return ReturnIsMatch(false);
-
-            if (Routes.Count() == 1 && textToCompare.IndexOf('{') == textToCompare.IndexOf('}') && textToCompare.IndexOf('}') == -1)
-                return ReturnIsMatch(true);
 
             var text = textToCompare;
             var ParameterName = string.Empty;
             foreach (var route in this.Routes)
             {
                 var isParameter = route.StartsWith("{") && route.EndsWith("}");
-                if (isParameter && string.IsNullOrEmpty(text))
-                {
-                    if (!AddParameter(ParameterName, string.Empty))
-                        return ReturnIsMatch(false);
-                }
-                else if (isParameter)
+                if (isParameter)
                 {
                     ParameterName = route;
                 }
@@ -52,7 +42,7 @@ namespace UrlMapper
                 {
                     var ParameterValue = text.Substring(0, text.IndexOf(route));
 
-                    if (!AddParameter(ParameterName, ParameterValue))
+                    if (!TryAddParameter(ParameterName, ParameterValue))
                         return ReturnIsMatch(false);
 
                     text = text.Substring(ParameterValue.Length + route.Length);
@@ -61,10 +51,13 @@ namespace UrlMapper
                 else return ReturnIsMatch(false);
             }
 
-            if (!string.IsNullOrEmpty(ParameterName) && !string.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(ParameterName))
             {
-                if (!AddParameter(ParameterName, text))
+                if (!TryAddParameter(ParameterName, text))
+                {
+                    Parameters = new Dictionary<string, string>();
                     return ReturnIsMatch(false);
+                }
             }
             else if (string.IsNullOrEmpty(ParameterName) && !string.IsNullOrEmpty(text))
                 return ReturnIsMatch(false);
@@ -83,7 +76,7 @@ namespace UrlMapper
             }
         }
 
-        private bool AddParameter(string key, string param)
+        private bool TryAddParameter(string key, string param)
         {
             if (!Parameters.ContainsKey(key))
             {
