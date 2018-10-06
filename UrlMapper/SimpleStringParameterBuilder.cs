@@ -7,22 +7,24 @@ namespace UrlMapper
     {
         public ISimpleStringParameter Parse(string pattern)
         {
-            // TODO: Need to implement this method.
             var routes = new List<string>();
             var patternSplit = pattern.Split('{');
-            foreach(var str in patternSplit)
+            var isFirst = true;
+            foreach (var str in patternSplit)
             {
                 var strSplit = str.Split('}');
-                if(strSplit.Length == 1)
-                        routes.Add(str);
-                else if(strSplit.Length == 2)
-                        routes.Add("{" + strSplit[0]  + "}");
-                else{
-                    routes.Add("{" + strSplit[0]  + "}");
-                    routes.Add( strSplit.Skip(1).Aggregate((x,y)=> x + "}" + y));
+                if (strSplit.Length == 1 || isFirst)
+                    routes.Add(str);
+                else if (strSplit.Length == 2)
+                    routes.Add("{" + strSplit[0] + "}");
+                else
+                {
+                    routes.Add("{" + strSplit[0] + "}");
+                    routes.Add(strSplit.Skip(1).Aggregate((x, y) => x + "}" + y));
                 }
+                isFirst = false;
             }
-            
+
             return new SimpleStringParameter(routes);
         }
     }
