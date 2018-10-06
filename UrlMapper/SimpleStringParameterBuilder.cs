@@ -22,7 +22,8 @@ namespace UrlMapper
                 else if (strSplit.Length > 1)
                 {
                     routes.Add("{" + strSplit[0] + "}");
-                    routes.Add(string.Join("}", strSplit.Skip(1)));
+                    if(!string.IsNullOrEmpty(string.Join("}", strSplit.Skip(1))))
+                        routes.Add(string.Join("}", strSplit.Skip(1)));
                 }
                 isFirst = false;
             }

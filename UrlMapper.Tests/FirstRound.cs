@@ -7,7 +7,7 @@ namespace UrlMapper.Tests
 {
     public class FirstRound
     {
-        private ISimpleStringParameterBuilder Builder => new SimpleStringParameterBuilder();
+        public static ISimpleStringParameterBuilder Builder => new SimpleStringParameterBuilder();
 
         [Theory(DisplayName = "ระบบสามารถสร้าง object ของ StringParameter ได้")]
         [InlineData("")]
@@ -129,12 +129,12 @@ namespace UrlMapper.Tests
         [InlineData(" ", "", false)]
         [InlineData(" ", null, false)]
         [InlineData("http://hackathon.com", "http://hackathon.com", true)]
-        [InlineData("http://hackathon.com", "http://hackathon.com/", true)]
-        [InlineData("http://hackathon.com/", "http://hackathon.com", true)]
+        [InlineData("http://hackathon.com", "http://hackathon.com/", false)]
+        [InlineData("http://hackathon.com/", "http://hackathon.com", false)]
         [InlineData("http://hackathon.com/", "http://hackathon.com/", true)]
         [InlineData("http://hackathon.com/none", "http://hackathon.com/none", true)]
-        [InlineData("http://hackathon.com/none", "http://hackathon.com/none/", true)]
-        [InlineData("http://hackathon.com/none/", "http://hackathon.com/none", true)]
+        [InlineData("http://hackathon.com/none", "http://hackathon.com/none/", false)]
+        [InlineData("http://hackathon.com/none/", "http://hackathon.com/none", false)]
         [InlineData("http://hackathon.com/none/", "http://hackathon.com/none/", true)]
         [InlineData("http://hackathon.com/{username}", "http://hackathon.com", false)]
         [InlineData("http://hackathon.com/{username}", "http://hackathon.com/", true)]
@@ -499,8 +499,8 @@ namespace UrlMapper.Tests
             var sut = builder.Parse(pattern);
 
             var expectedDic = new Dictionary<string, string>();
-            var expectedKeys = keys.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var expectedValues = values.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var expectedKeys = keys.Split(',');
+            var expectedValues = values.Split(',');
 
             for (int elementIndex = 0; elementIndex < expectedKeys.Length; elementIndex++)
                 expectedDic.Add(expectedKeys[elementIndex], expectedValues[elementIndex]);

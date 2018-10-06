@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App1"
+             x:Class="App1.MainPage">
+
+    <StackLayout>
+        <Label Text="Pattern : " />
+        <Entry x:Name="Pattern" Text="www.something.org/{p1}/{p2}/{p3}/" />
+        <Label Text="Url : " />
+        <Entry x:Name="Url" Text="www.something.org/1/2/3/" />
+        <Button Text="Is Matched" Clicked="Button_IsMatched_Clicked" />
+        <Button Text="Extract Parameters" Clicked="Button_ExtractParameters_Clicked" />
+        <ListView x:Name="Result">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" Detail="{Binding Value}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>

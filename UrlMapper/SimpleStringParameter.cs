@@ -22,7 +22,7 @@ namespace UrlMapper
         {
             if (Pattern == string.Empty && textToCompare == string.Empty)
                 return ReturnIsMatch(true);
-            else if (string.IsNullOrEmpty(Pattern) || string.IsNullOrEmpty(textToCompare))
+            else if (string.IsNullOrEmpty(Pattern) || textToCompare == null)
                 return ReturnIsMatch(false);
 
             var text = textToCompare;
@@ -34,7 +34,7 @@ namespace UrlMapper
                 {
                     ParameterName = route;
                 }
-                else if (!isParameter && text.StartsWith(route))
+                else if (!isParameter && text.StartsWith(route) && ParameterName == string.Empty)
                 {
                     text = text.Substring(route.Length);
                 }
