@@ -5,9 +5,9 @@ namespace UrlMapper.Tests
 {
     public class UnitTest1
     {
-        [Fact()]
-        public void Test1()
-        {
-        }
+        //[Fact(Skip = "Just a sample test.")]
+        //public void Test1()
+        //{
+        //}
     }
 }
